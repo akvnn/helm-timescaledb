@@ -1,0 +1,16 @@
+{{- if .Values.persistentVolumeClaim.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "timescaledb.fullname" . }}
+  labels:
+    {{- include "timescaledb.labels" . | nindent 4 }}
+spec:
+  accessModes:
+    {{- toYaml .Values.persistentVolumeClaim.accessModes | nindent 4 }}
+  resources:
+    {{- toYaml .Values.persistentVolumeClaim.resources | nindent 4 }}
+  {{- if .Values.persistentVolumeClaim.storageClass }}
+  storageClassName: {{ .Values.persistentVolumeClaim.storageClass | quote }}
+  {{- end }}
+{{- end }}

@@ -1,0 +1,74 @@
+name: timescaledb
+image:
+  repository: timescale/timescaledb
+  pullPolicy: IfNotPresent
+  tag: latest-pg17
+replicaCount: 1
+imagePullSecrets: []
+
+serviceAccount:
+  create: true
+  automount: true
+  annotations: {}
+  name: ""
+
+podAnnotations: {}
+podLabels: {}
+
+podSecurityContext: {}
+
+securityContext: {}
+
+env:
+  - name: POSTGRES_USER
+    value: postgres
+  - name: POSTGRES_PASSWORD
+    value: postgres
+  - name: POSTGRES_DB
+    value: postgres
+  - name: PGDATA
+    value: /var/lib/postgresql/data/pgdata
+    
+service:
+  name: postgresql
+  type: NodePort
+  protocol: TCP
+  port: 5432
+  targetPort: 5432
+  nodePort: 30080
+
+
+resources: 
+  limits:
+    cpu: 1500m
+    memory: 4Gi
+  requests:
+    cpu: 1000m
+    memory: 2Gi
+
+livenessProbe: null
+readinessProbe: null
+
+persistentVolumeClaim:
+  enabled: true
+  storageClass: ""
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 200Gi
+
+volumes:
+  - name: timescaledb-storage # must match the volumeMounts name
+    persistentVolumeClaim:
+      claimName: timescaledb
+
+volumeMounts:
+  - mountPath: /var/lib/postgresql/data
+    name: timescaledb-storage # must match the volumes name
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
